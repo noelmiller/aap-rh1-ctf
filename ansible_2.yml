@@ -26,12 +26,11 @@
         mode: '0660'
 
     - name: Create tasks.done file in IT folder
-      copy:
-        dest: "/team/IT/tasks.done"
-        content: "all folders are set\n"
-        owner: root
-        group: IT
-        mode: '0660'
+      lineinfile:
+        path: "/it/tasks.done"
+        line: "all folders are set"
+        insertbefore: BOF
+        create: yes
 
     - name: Add ctf_sa to all groups
       user:
