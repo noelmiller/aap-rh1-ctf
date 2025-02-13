@@ -1,0 +1,45 @@
+---
+- name: Setup team folders on Server2
+  hosts: server2
+  become: true
+
+  tasks:
+    - name: Create team folder structure
+      file:
+        path: "/team/{{ item }}"
+        state: directory
+        owner: root
+        group: "{{ item }}"
+        mode: '2770'
+      loop:
+        - Sales
+        - Support
+        - Services
+        - IT
+
+    - name: Create Salesnumbers file
+      copy:
+        dest: "/team/Sales/Salesnumbers"
+        content: ""
+        owner: root
+        group: Sales
+        mode: '0660'
+
+    - name: Create tasks.done file in IT folder
+      copy:
+        dest: "/team/IT/tasks.done"
+        content: "all folders are set\n"
+        owner: root
+        group: IT
+        mode: '0660'
+
+    - name: Add ctf_sa to all groups
+      user:
+        name: ctf_sa
+        groups: "{{ item }}"
+        append: yes
+      loop:
+        - Sales
+        - Support
+        - Services
+        - IT
