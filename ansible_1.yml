@@ -1,6 +1,6 @@
 ---
 - name: Setup users and groups on Server2
-  hosts: server2.vzrmc.sandbox4535.opentlc.com
+  hosts: server2
   become: true
   
   vars:
