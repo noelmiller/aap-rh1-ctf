@@ -16,12 +16,12 @@
       replace:
         path: /etc/chrony.conf
         regexp: '^pool.*$'
-        replace: 'server 3.north-america.pool.ntp.org iburst'
+        replace: 'pool 3.north-america.pool.ntp.org iburst'
 
     - name: Start and enable chronyd
       service:
         name: chronyd
-        state: started
+        state: restarted
         enabled: yes
 
     - name: Start and enable Cockpit
