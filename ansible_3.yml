@@ -1,0 +1,42 @@
+---
+- name: Setup team folders on Server2
+  hosts: server2
+  become: true
+
+  tasks:
+    - name: Create a new partition on /dev/nvme1n1
+      parted:
+        device: /dev/nvme1n1
+        number: 1
+        state: present
+        part_end: 1GiB
+
+    - name: Create XFS filesystem
+      filesystem:
+        fstype: xfs
+        dev: /dev/nvme1n1p1
+
+    - name: Create mount point directory
+      file:
+        path: /extdrive
+        state: directory
+        owner: root
+        group: IT
+        mode: '2770'
+
+    - name: Add mount to /etc/fstab
+      mount:
+        path: /extdrive
+        src: /dev/nvme1n1p1
+        fstype: xfs
+        state: mounted
+        opts: defaults
+        
+    - name: Set permissions on mounted directory
+      file:
+        path: /extdrive
+        state: directory
+        owner: root
+        group: IT
+        mode: '2770'
+        recurse: yes
