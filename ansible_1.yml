@@ -1,0 +1,91 @@
+---
+- name: Setup users and groups on Server2
+  hosts: server2.vzrmc.sandbox4535.opentlc.com
+  become: true
+  
+  vars:
+    user_password: "@#FD12"
+    ssh_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFN90Xtfjxqs2ZpO0VqR1jr92mJiTx3IaEl/F+LiOZJK"
+    
+  tasks:
+    - name: Create groups
+      group:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - Sales
+        - Support
+        - Services
+        - IT
+
+    - name: Create users
+      user:
+        name: "{{ item }}"
+        password: "{{ user_password | password_hash('sha512') }}"
+        state: present
+      loop:
+        - Annabelle
+        - Bob
+        - Carl
+        - Dyson
+        - Evert
+        - Frank
+        - Gerry
+        - Harold
+        - Isabella
+        - Jameson
+
+    - name: Add users to Sales group
+      user:
+        name: "{{ item }}"
+        groups: Sales
+        append: yes
+      loop:
+        - Frank
+        - Annabelle
+
+    - name: Add users to Support group
+      user:
+        name: "{{ item }}"
+        groups: Support
+        append: yes
+      loop:
+        - Carl
+        - Dyson
+        - Gerry
+
+    - name: Add users to Services group
+      user:
+        name: "{{ item }}"
+        groups: Services
+        append: yes
+      loop:
+        - Jameson
+        - Isabella
+
+    - name: Add users to IT group
+      user:
+        name: "{{ item }}"
+        groups: IT
+        append: yes
+      loop:
+        - Harold
+        - Evert
+        - Bob
+
+    - name: Add SSH key to all users
+      authorized_key:
+        user: "{{ item }}"
+        state: present
+        key: "{{ ssh_key }}"
+      loop:
+        - Annabelle
+        - Bob
+        - Carl
+        - Dyson
+        - Evert
+        - Frank
+        - Gerry
+        - Harold
+        - Isabella
+        - Jameson
