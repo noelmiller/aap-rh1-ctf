@@ -14,7 +14,7 @@
 
     - name: Configure NTP server
       replace:
-        path: /etc/chrony.conf
+        path: /etc/chrony/chrony.conf
         regexp: '^pool.*$'
         replace: 'pool 3.north-america.pool.ntp.org iburst'
 
