@@ -4,17 +4,23 @@
   become: true
 
   tasks:
-    - name: Create a new partition on /dev/nvme1n1
-      parted:
-        device: /dev/nvme1n1
-        number: 1
+    - name: Create volume group
+      lvg:
+        vg: itvg
+        pvs: /dev/nvme1n1
         state: present
-        part_end: 1GiB
+
+    - name: Create logical volume
+      lvol:
+        vg: itvg
+        lv: itlv
+        size: 1g
+        state: present
 
     - name: Create XFS filesystem
       filesystem:
         fstype: xfs
-        dev: /dev/nvme1n1p1
+        dev: /dev/itvg/itlv
 
     - name: Create mount point directory
       file:
@@ -27,7 +33,7 @@
     - name: Add mount to /etc/fstab
       mount:
         path: /extdrive
-        src: /dev/nvme1n1p1
+        src: /dev/itvg/itlv
         fstype: xfs
         state: mounted
         opts: defaults
